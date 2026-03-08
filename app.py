@@ -1,60 +1,16 @@
 import random
 import streamlit as st
-
-def get_range_for_difficulty(difficulty: str):
-    if difficulty == "Easy":
-        return 1, 20
-    if difficulty == "Normal":
-        return 1, 50
-    if difficulty == "Hard":
-        return 1, 100
-    return 1, 100
+from logic_utils import get_range_for_difficulty, parse_guess, check_guess, update_score
 
 
-def parse_guess(raw: str):
-    if raw is None:
-        return False, None, "Enter a guess."
-
-    if raw == "":
-        return False, None, "Enter a guess."
-
-    try:
-        if "." in raw:
-            value = int(float(raw))
-        else:
-            value = int(raw)
-    except Exception:
-        return False, None, "That is not a number."
-
-    return True, value, None
-
-
-def check_guess(guess, secret):
-    if guess == secret:
-        return "Win", "🎉 Correct!"
-
-    if guess > secret:
-        return "Too High", "📉 Go LOWER!"
-    else:
-        return "Too Low", "📈 Go HIGHER!"
-
-
-def update_score(current_score: int, outcome: str, attempt_number: int):
+def get_hint_message(outcome: str):
+    """Get the hint message for a given outcome."""
     if outcome == "Win":
-        points = 100 - 10 * (attempt_number + 1)
-        if points < 10:
-            points = 10
-        return current_score + points
-
-    if outcome == "Too High":
-        if attempt_number % 2 == 0:
-            return current_score + 5
-        return current_score - 5
-
-    if outcome == "Too Low":
-        return current_score - 5
-
-    return current_score
+        return "🎉 Correct!"
+    elif outcome == "Too High":
+        return "📉 Go LOWER!"
+    else:  # Too Low
+        return "📈 Go HIGHER!"
 
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
 
@@ -161,9 +117,10 @@ if submit:
 
         secret = st.session_state.secret
 
-        outcome, message = check_guess(guess_int, secret)
+        outcome = check_guess(guess_int, secret)
 
         if show_hint:
+            message = get_hint_message(outcome)
             st.session_state.last_hint = ("warning", message)
 
         st.session_state.score = update_score(
