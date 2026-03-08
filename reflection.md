@@ -67,3 +67,5 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - Always double check the AI's solution, use git to return to previous version if the solution doesn't work or breaks the app
 - Always give the AI the needed context, in this case, the code base before every prompt
 - Very convenient, but they tend to hallucinate or change code that they aren't suppose to change
+
+- Claude gave way more efficient fixes compare to CoPilot, this is probably due to the models' capabilities and their access to the entire code base (both of which Claude did better)
